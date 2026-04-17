@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
-import { Sparkles, MessageSquare, Star, ArrowUpRight, Shield, Clock } from "lucide-react";
+import { Sparkles, MessageSquare, Star, ArrowUpRight, Shield, Clock, Share2 } from "lucide-react";
+import { useState } from "react";
 
 const EXPERIENCES = [
   {
@@ -32,6 +33,27 @@ const EXPERIENCES = [
 ];
 
 export default function ArtisanConcierge() {
+  const [sharedId, setSharedId] = useState<number | null>(null);
+
+  const handleShare = async (exp: typeof EXPERIENCES[0]) => {
+    try {
+      const shareUrl = `${window.location.href}#experience-${exp.id}`;
+      if (navigator.share) {
+        await navigator.share({
+          title: exp.title,
+          text: `Découvrez l'expérience "${exp.title}" avec Expériences Bénin.`,
+          url: shareUrl,
+        });
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+        setSharedId(exp.id);
+        setTimeout(() => setSharedId(null), 2000);
+      }
+    } catch (err) {
+      console.error("Erreur de partage:", err);
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto px-6 pt-12 pb-40">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20">
@@ -79,9 +101,18 @@ export default function ArtisanConcierge() {
 
               <div className="flex items-center justify-between pt-4 border-t border-gold/10">
                 <span className="text-forest font-serif text-base">{exp.price}</span>
-                <button className="text-[9px] uppercase tracking-widest font-bold text-gold hover:text-forest transition-colors">
-                  Réserver
-                </button>
+                <div className="flex items-center gap-4">
+                  <button 
+                    onClick={() => handleShare(exp)}
+                    className="flex items-center gap-1.5 text-[9px] uppercase tracking-widest font-bold text-forest/40 hover:text-gold transition-colors relative"
+                  >
+                    <Share2 className="w-3 h-3" />
+                    {sharedId === exp.id ? "Copié !" : "Partager"}
+                  </button>
+                  <button className="text-[9px] uppercase tracking-widest font-bold text-gold hover:text-forest transition-colors underline decoration-gold/30 underline-offset-4">
+                    Réserver
+                  </button>
+                </div>
               </div>
             </div>
           </motion.div>

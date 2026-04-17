@@ -155,6 +155,40 @@ export default function ARWindow() {
                   >
                     {/* Render the 3D Reconstruction Placeholder */}
                     <div className="absolute inset-0 bg-gradient-to-br from-benin-gold/30 to-royal-green/30 backdrop-blur-sm rounded-3xl border border-white/20 flex items-center justify-center overflow-hidden">
+                      {/* Edge Distortion Effect */}
+                      <div className="absolute inset-0 z-10 pointer-events-none opacity-40 mix-blend-overlay">
+                        <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-benin-gold/40 to-transparent animate-pulse filter blur-xl" />
+                        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-benin-gold/40 to-transparent animate-pulse filter blur-xl" />
+                      </div>
+
+                      {/* Particle System Effect */}
+                      <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
+                        {[...Array(15)].map((_, i) => (
+                          <motion.div
+                            key={i}
+                            initial={{ 
+                              x: "50%", 
+                              y: "50%", 
+                              scale: 0, 
+                              opacity: 0 
+                            }}
+                            animate={{ 
+                              x: `${Math.random() * 100}%`, 
+                              y: `${Math.random() * 100}%`, 
+                              scale: [0, 1, 0.5],
+                              opacity: [0, 0.8, 0]
+                            }}
+                            transition={{ 
+                              duration: 3 + Math.random() * 4,
+                              repeat: Infinity,
+                              delay: i * 0.5,
+                              ease: "easeOut"
+                            }}
+                            className="absolute w-1 h-1 bg-gold rounded-full shadow-[0_0_8px_#D4AF37]"
+                          />
+                        ))}
+                      </div>
+
                       <motion.img 
                         animate={{ 
                           x: mousePos.x * -10,

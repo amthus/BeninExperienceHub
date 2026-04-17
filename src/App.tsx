@@ -59,12 +59,13 @@ export default function App() {
           <motion.h1 
             animate={{ scale: [1, 1.01, 1] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="text-2xl md:text-4xl font-serif text-forest tracking-tight transition-all duration-700 group-hover:tracking-normal leading-none"
+            className="text-2xl md:text-4xl font-serif text-forest tracking-tight transition-all duration-700 group-hover:tracking-normal leading-none relative"
           >
             Expériences Bénin
+            <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-gold transition-all duration-500 group-hover:w-full" />
           </motion.h1>
           <div className="relative overflow-hidden hidden md:block">
-            <p className="text-[11px] uppercase tracking-[3px] text-gold font-medium">
+            <p className="text-[11px] uppercase tracking-[3px] text-gold font-medium transition-all duration-500 group-hover:-translate-y-0.5 group-hover:drop-shadow-[0_2px_2px_rgba(212,175,55,0.3)]">
               Le Prestige de l'Héritage
             </p>
             <motion.div 

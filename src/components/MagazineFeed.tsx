@@ -118,7 +118,15 @@ export default function MagazineFeed() {
              <div className="w-full h-full" style={{ backgroundImage: `radial-gradient(circle at 1.5px 1.5px, #D4AF37 1px, transparent 0)`, backgroundSize: '30px 30px' }} />
           </div>
 
-          <div className="relative w-full h-full flex items-center justify-center">
+          <motion.div 
+            animate={selectedPin ? { 
+              scale: 1.5,
+              translateX: `${(50 - parseFloat(MAP_PINS.find(p => p.id === selectedPin)?.x || "50")) * 0.5}%`,
+              translateY: `${(50 - parseFloat(MAP_PINS.find(p => p.id === selectedPin)?.y || "50")) * 0.5}%`
+            } : { scale: 1, translateX: "0%", translateY: "0%" }}
+            transition={{ type: "spring", stiffness: 40, damping: 20 }}
+            className="relative w-full h-full flex items-center justify-center"
+          >
             {/* Custom Pins */}
             {MAP_PINS.map((pin) => (
               <motion.div
@@ -178,7 +186,7 @@ export default function MagazineFeed() {
                <path d="M100,100 Q300,50 400,200 T700,300" fill="none" stroke="#D4AF37" strokeWidth="1" strokeDasharray="5,5" />
                <path d="M200,400 Q400,300 600,350 T900,100" fill="none" stroke="#D4AF37" strokeWidth="1" strokeDasharray="5,5" />
             </svg>
-          </div>
+          </motion.div>
         </div>
       </section>
 

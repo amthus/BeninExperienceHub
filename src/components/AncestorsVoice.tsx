@@ -43,30 +43,56 @@ export default function AncestorsVoice() {
               </div>
             </div>
 
-            {/* Waveform */}
-            <div className="flex items-end gap-[3px] h-10 mb-4 opacity-80">
-              {[0.3, 0.6, 0.45, 0.8, 0.5, 0.9, 0.4, 0.75, 0.2, 0.55, 0.85, 0.35, 0.95, 0.45, 0.65, 0.25].map((h, i) => (
-                <motion.div
-                  key={i}
-                  animate={{ height: isPlaying ? [h*100 + "%", (h*0.5)*100 + "%", h*100 + "%"] : h*100 + "%" }}
-                  transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.05 }}
-                  className="flex-1 bg-gold rounded-[2px]"
-                />
-              ))}
+            {/* Waveform Visualizer */}
+            <div className="flex items-end gap-[2px] h-12 mb-4 overflow-hidden rounded-md bg-forest/5 p-1">
+              {[...Array(40)].map((_, i) => {
+                const h = 0.4 + Math.random() * 0.6;
+                return (
+                  <motion.div
+                    key={i}
+                    animate={isPlaying ? { 
+                      height: [h*100 + "%", (h*0.3)*100 + "%", h*100 + "%"],
+                      opacity: [0.6, 1, 0.6]
+                    } : { height: "15%", opacity: 0.3 }}
+                    transition={{ 
+                      duration: 0.4 + Math.random() * 0.6, 
+                      repeat: Infinity, 
+                      delay: i * 0.02,
+                      ease: "easeInOut"
+                    }}
+                    className="flex-1 bg-gold rounded-full"
+                  />
+                );
+              })}
             </div>
 
             <div className="flex justify-between items-center text-[10px] text-gold font-mono">
-              <span>02:14</span>
+              <motion.span
+                animate={isPlaying ? { opacity: [0.5, 1, 0.5] } : { opacity: 1 }}
+                transition={{ duration: 1, repeat: Infinity }}
+              >
+                02:14
+              </motion.span>
               <span>08:45</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Playlist / Suggestions */}
-      <div className="mt-20">
+      <motion.div 
+        animate={isPlaying ? { 
+          boxShadow: ["0 0 20px rgba(212,175,55,0.1)", "0 0 40px rgba(212,175,55,0.2)", "0 0 20px rgba(212,175,55,0.1)"] 
+        } : {}}
+        transition={{ duration: 2, repeat: Infinity }}
+        className="mt-20"
+      >
         <h4 className="text-xs uppercase tracking-[0.3em] text-benin-gold font-bold flex items-center gap-3 mb-8">
-          Histoires à proximité <div className="h-[1px] flex-1 bg-benin-gold/20" />
+          Histoires à proximité 
+          <motion.div 
+            animate={isPlaying ? { opacity: [0.2, 0.5, 0.2] } : {}}
+            transition={{ duration: 1.5, repeat: Infinity }}
+            className="h-[1px] flex-1 bg-benin-gold/20" 
+          />
         </h4>
         
         <div className="space-y-4">
@@ -87,7 +113,7 @@ export default function AncestorsVoice() {
             </div>
           ))}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
