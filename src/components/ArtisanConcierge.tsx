@@ -1,5 +1,5 @@
-import { motion } from "motion/react";
-import { Sparkles, MessageSquare, Star, ArrowUpRight, Shield, Clock, Share2 } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import { Sparkles, MessageSquare, Share2, Check } from "lucide-react";
 import { useState } from "react";
 
 const EXPERIENCES = [
@@ -32,8 +32,9 @@ const EXPERIENCES = [
   }
 ];
 
-export default function ArtisanConcierge() {
+export default function ArtisanConcierge({ onNavigate }: { onNavigate?: () => void }) {
   const [sharedId, setSharedId] = useState<number | null>(null);
+  const [bookedId, setBookedId] = useState<number | null>(null);
 
   const handleShare = async (exp: typeof EXPERIENCES[0]) => {
     try {
@@ -54,17 +55,39 @@ export default function ArtisanConcierge() {
     }
   };
 
+  const handleBook = (id: number) => {
+    setBookedId(id);
+    setTimeout(() => setBookedId(null), 3000);
+  };
+
   return (
     <div className="max-w-6xl mx-auto px-6 pt-12 pb-40">
+      <AnimatePresence>
+        {bookedId && (
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 20, opacity: 0 }}
+            className="fixed top-24 left-1/2 -translate-x-1/2 z-[60] bg-forest text-gold px-6 py-3 rounded-full flex items-center gap-3 shadow-2xl border border-gold/50"
+          >
+            <Check className="w-4 h-4" />
+            <span className="text-xs font-bold uppercase tracking-widest">Réservation confirmée</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20">
         <div className="max-w-xl">
-          <h2 className="text-5xl font-serif text-benin-green mb-6 italic italic">Conciergerie Artisanale</h2>
+          <h2 className="text-5xl font-serif text-benin-green mb-6 italic">Conciergerie Artisanale</h2>
           <p className="text-benin-green/60 uppercase tracking-[0.2em] text-[10px] font-bold leading-relaxed">
             Rencontrez les gardiens du savoir-faire. <br />
             Des expériences privées, authentiques et prestigieuses, réservées aux membres de l'Éclat d'Or.
           </p>
         </div>
-        <button className="flex items-center gap-3 bg-royal-green text-white px-8 py-4 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-benin-gold transition-all shadow-xl">
+        <button 
+          onClick={() => alert("Mise en relation avec un expert en cours...")}
+          className="flex items-center gap-3 bg-royal-green text-white px-8 py-4 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-benin-gold transition-all shadow-xl"
+        >
           <MessageSquare className="w-4 h-4" /> Parler à un Concierge
         </button>
       </div>
@@ -109,7 +132,10 @@ export default function ArtisanConcierge() {
                     <Share2 className="w-3 h-3" />
                     {sharedId === exp.id ? "Copié !" : "Partager"}
                   </button>
-                  <button className="text-[9px] uppercase tracking-widest font-bold text-gold hover:text-forest transition-colors underline decoration-gold/30 underline-offset-4">
+                  <button 
+                    onClick={() => handleBook(exp.id)}
+                    className="text-[9px] uppercase tracking-widest font-bold text-gold hover:text-forest transition-colors underline decoration-gold/30 underline-offset-4"
+                  >
                     Réserver
                   </button>
                 </div>
@@ -120,11 +146,11 @@ export default function ArtisanConcierge() {
       </div>
 
       <div className="max-w-xl mx-auto space-y-4">
-        <div className="dashed-box">
+        <div className="dashed-box cursor-pointer hover:bg-white transition-all">
            <span className="text-[11px] uppercase tracking-widest text-forest font-bold">Conciergerie Artisanale</span>
            <p className="text-[14px] font-serif mt-2 italic">Réserver une cérémonie privée à Ouidah</p>
         </div>
-        <div className="dashed-box">
+        <div className="dashed-box cursor-pointer hover:bg-white transition-all">
            <span className="text-[11px] uppercase tracking-widest text-forest font-bold">Expérience Gastronomique</span>
            <p className="text-[14px] font-serif mt-2 italic">Dîner aux chandelles au Palais d'Été</p>
         </div>

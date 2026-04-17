@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "motion/react";
-import { ArrowRight, MapPin, Calendar, X as CloseIcon } from "lucide-react";
+import { ArrowRight, MapPin, X as CloseIcon } from "lucide-react";
 import { cn } from "@/src/lib/utils";
 
 const DESTINATIONS = [
@@ -44,6 +44,7 @@ const MAP_PINS = [
 export default function MagazineFeed() {
   const [selectedPin, setSelectedPin] = useState<number | null>(null);
   const heroRef = useRef(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"]
@@ -51,9 +52,12 @@ export default function MagazineFeed() {
 
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
+  const scrollToContent = () => {
+    contentRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-16 md:space-y-32 pb-20 md:pb-40">
-      {/* Hero Section */}
       <section ref={heroRef} className="relative h-[60vh] md:h-[80vh] flex items-end pb-8 md:pb-12 overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] bg-forest">
         <motion.div 
           style={{ y }}
@@ -91,14 +95,16 @@ export default function MagazineFeed() {
             transition={{ delay: 1 }}
             className="flex items-center gap-6"
           >
-            <button className="bg-gold text-forest hover:bg-white hover:text-forest transition-all px-6 py-2 md:px-8 md:py-3 rounded-full font-bold uppercase tracking-widest text-[9px] md:text-xs">
+            <button 
+              onClick={scrollToContent}
+              className="bg-gold text-forest hover:bg-white hover:text-forest transition-all px-6 py-2 md:px-8 md:py-3 rounded-full font-bold uppercase tracking-widest text-[9px] md:text-xs"
+            >
               Explorer
             </button>
           </motion.div>
         </div>
       </section>
 
-      {/* Interactive Map Integration */}
       <section className="space-y-8 md:space-y-12">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="max-w-xl">
@@ -113,7 +119,6 @@ export default function MagazineFeed() {
         </div>
 
         <div className="relative w-full aspect-[4/3] md:aspect-[21/9] bg-forest/5 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden border border-gold/10 p-2 md:p-4">
-          {/* Abstract Map Background */}
           <div className="absolute inset-0 opacity-10 pointer-events-none">
              <div className="w-full h-full" style={{ backgroundImage: `radial-gradient(circle at 1.5px 1.5px, #D4AF37 1px, transparent 0)`, backgroundSize: '30px 30px' }} />
           </div>
@@ -127,7 +132,6 @@ export default function MagazineFeed() {
             transition={{ type: "spring", stiffness: 40, damping: 20 }}
             className="relative w-full h-full flex items-center justify-center"
           >
-            {/* Custom Pins */}
             {MAP_PINS.map((pin) => (
               <motion.div
                 key={pin.id}
@@ -152,7 +156,6 @@ export default function MagazineFeed() {
                     className="absolute -inset-1.5 md:-inset-2 bg-gold/20 rounded-full animate-ping"
                   />
 
-                  {/* Tooltip */}
                   <AnimatePresence>
                     {selectedPin === pin.id && (
                       <motion.div 
@@ -178,10 +181,8 @@ export default function MagazineFeed() {
               </motion.div>
             ))}
 
-            {/* Click outside to close */}
             <div className="absolute inset-0 z-0" onClick={() => setSelectedPin(null)} />
 
-            {/* Simulated Map Texture */}
             <svg className="w-full h-full opacity-10 md:opacity-20 pointer-events-none" viewBox="0 0 1000 428">
                <path d="M100,100 Q300,50 400,200 T700,300" fill="none" stroke="#D4AF37" strokeWidth="1" strokeDasharray="5,5" />
                <path d="M200,400 Q400,300 600,350 T900,100" fill="none" stroke="#D4AF37" strokeWidth="1" strokeDasharray="5,5" />
@@ -190,8 +191,7 @@ export default function MagazineFeed() {
         </div>
       </section>
 
-      {/* Editorial Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 md:gap-x-12 gap-y-16 md:gap-y-32">
+      <div ref={contentRef} className="grid grid-cols-1 md:grid-cols-12 gap-x-8 md:gap-x-12 gap-y-16 md:gap-y-32">
         {DESTINATIONS.map((dest, idx) => (
           <motion.article 
             key={dest.id}
@@ -239,7 +239,6 @@ export default function MagazineFeed() {
                     <div className="flex items-center gap-2 text-[9px] md:text-[10px] text-gold uppercase tracking-[2px] font-bold">
                       {dest.date}
                     </div>
-                    {/* Historical Insight micro-component */}
                     <motion.div 
                       initial={{ opacity: 0 }}
                       whileInView={{ opacity: 1 }}
@@ -256,7 +255,10 @@ export default function MagazineFeed() {
                       </div>
                     </motion.div>
                   </div>
-                  <button className="flex items-center gap-2 text-forest hover:text-gold transition-colors font-bold uppercase tracking-widest text-[9px] md:text-[10px]">
+                  <button 
+                    onClick={() => alert(`Exploration de ${dest.title} initiée.`)}
+                    className="flex items-center gap-2 text-forest hover:text-gold transition-colors font-bold uppercase tracking-widest text-[9px] md:text-[10px]"
+                  >
                     Partir <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>

@@ -1,8 +1,3 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
@@ -11,13 +6,11 @@ import {
   Mic2, 
   Box, 
   Sparkles,
-  Menu,
   User,
   Heart
 } from "lucide-react";
 import { cn } from "@/src/lib/utils";
 
-// Views
 import MagazineFeed from "./components/MagazineFeed";
 import CulturalPass from "./components/CulturalPass";
 import AncestorsVoice from "./components/AncestorsVoice";
@@ -29,6 +22,7 @@ type ViewType = 'feed' | 'pass' | 'voice' | 'ar' | 'concierge';
 export default function App() {
   const [activeView, setActiveView] = useState<ViewType>('feed');
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,7 +42,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-ivory selection:bg-gold selection:text-white">
-      {/* Top Header */}
       <header 
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-6 md:px-10 py-4 md:py-6 flex items-center justify-between",
@@ -75,16 +68,24 @@ export default function App() {
         </div>
         
         <div className="flex items-center gap-4 md:gap-6">
-          <Heart className="w-4 h-4 md:w-5 md:h-5 cursor-pointer text-forest hover:text-red-500 transition-colors" />
-          <div className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-gold/30 p-0.5 overflow-hidden cursor-pointer hover:border-gold transition-all">
+          <motion.button 
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setIsLiked(!isLiked)}
+          >
+            <Heart className={cn(
+              "w-4 h-4 md:w-5 md:h-5 cursor-pointer transition-all duration-300",
+              isLiked ? "text-red-500 fill-red-500" : "text-forest hover:text-red-500"
+            )} />
+          </motion.button>
+          <div className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-gold/30 p-0.5 overflow-hidden cursor-pointer hover:border-gold transition-all relative">
             <div className="w-full h-full rounded-full bg-forest flex items-center justify-center text-white">
               <User className="w-3 h-3 md:w-4 md:h-4" />
             </div>
+            <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-gold border-[2px] border-white rounded-full animate-pulse" />
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="pt-24 md:pt-32 pb-32 md:pb-40 overflow-x-hidden">
         <AnimatePresence mode="wait">
           <motion.div
@@ -98,12 +99,11 @@ export default function App() {
             {activeView === 'pass' && <CulturalPass />}
             {activeView === 'voice' && <AncestorsVoice />}
             {activeView === 'ar' && <ARWindow />}
-            {activeView === 'concierge' && <ArtisanConcierge />}
+            {activeView === 'concierge' && <ArtisanConcierge onNavigate={() => setActiveView('concierge')} />}
           </motion.div>
         </AnimatePresence>
       </main>
 
-      {/* Floating Navigation */}
       <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-lg">
         <div className="bg-white/80 backdrop-blur-xl border border-gold/20 rounded-full shadow-2xl p-1.5 flex items-center justify-between">
           {navItems.map((item) => {
@@ -133,7 +133,6 @@ export default function App() {
         </div>
       </nav>
 
-      {/* Background Decor */}
       <div className="fixed inset-0 pointer-events-none z-[-1] opacity-20">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-benin-gold/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-benin-green/10 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2" />

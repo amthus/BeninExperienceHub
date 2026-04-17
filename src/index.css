@@ -76,7 +76,6 @@
   }
 }
 
-/* Custom animations */
 @keyframes shimmer {
   0% { transform: translateX(-100%) skewX(-15deg); }
   50% { transform: translateX(100%) skewX(-15deg); }

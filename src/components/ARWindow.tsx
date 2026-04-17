@@ -7,6 +7,7 @@ export default function ARWindow() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanState, setScanState] = useState<'idle' | 'scanning' | 'detected'>('idle');
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [showInfo, setShowInfo] = useState(false);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (scanState !== 'detected') return;
@@ -27,7 +28,6 @@ export default function ARWindow() {
         }
         setHasPermission(true);
       } catch (err) {
-        console.error("Camera error:", err);
         setHasPermission(false);
       }
     }
@@ -43,6 +43,11 @@ export default function ARWindow() {
   const handleScan = () => {
     setScanState('scanning');
     setTimeout(() => setScanState('detected'), 2500);
+  };
+
+  const handleReset = () => {
+    setScanState('idle');
+    setTimeout(handleScan, 500);
   };
 
   return (
@@ -66,7 +71,10 @@ export default function ARWindow() {
             <p className="text-white/60 text-sm max-w-xs mx-auto mb-8 font-light">
               Pour une immersion totale, veuillez autoriser l'accès à votre caméra environnementale.
             </p>
-            <button className="bg-benin-gold text-royal-green px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs">
+            <button 
+              onClick={() => window.location.reload()}
+              className="bg-benin-gold text-royal-green px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs"
+            >
               Réessayer
             </button>
           </div>
@@ -79,16 +87,13 @@ export default function ARWindow() {
               className="w-full h-full object-cover scale-x-[-1] opacity-70"
             />
             
-            {/* UI Overlay */}
             <div className="absolute inset-0 pointer-events-none">
-              {/* Corner Accents */}
               <div className="absolute top-10 left-10 w-20 h-20 border-t-2 border-l-2 border-benin-gold" />
               <div className="absolute top-10 right-10 w-20 h-20 border-t-2 border-r-2 border-benin-gold" />
               <div className="absolute bottom-10 left-10 w-20 h-20 border-b-2 border-l-2 border-benin-gold" />
               <div className="absolute bottom-10 right-10 w-20 h-20 border-b-2 border-r-2 border-benin-gold" />
             </div>
 
-            {/* Scanning UI */}
             <AnimatePresence>
               {scanState === 'idle' && (
                 <motion.div 
@@ -153,15 +158,12 @@ export default function ARWindow() {
                     }}
                     className="relative w-full h-full max-w-4xl"
                   >
-                    {/* Render the 3D Reconstruction Placeholder */}
                     <div className="absolute inset-0 bg-gradient-to-br from-benin-gold/30 to-royal-green/30 backdrop-blur-sm rounded-3xl border border-white/20 flex items-center justify-center overflow-hidden">
-                      {/* Edge Distortion Effect */}
                       <div className="absolute inset-0 z-10 pointer-events-none opacity-40 mix-blend-overlay">
                         <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-benin-gold/40 to-transparent animate-pulse filter blur-xl" />
                         <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-benin-gold/40 to-transparent animate-pulse filter blur-xl" />
                       </div>
 
-                      {/* Particle System Effect */}
                       <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
                         {[...Array(15)].map((_, i) => (
                           <motion.div
@@ -233,20 +235,43 @@ export default function ARWindow() {
               )}
             </AnimatePresence>
 
-            {/* Bottom Controls */}
             <div className="absolute bottom-8 left-8 flex gap-4 pointer-events-auto">
-              <button className="p-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/20 transition-all">
+              <button 
+                onClick={handleReset}
+                className="p-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/20 transition-all"
+              >
                 <RefreshCw className="w-5 h-5" />
               </button>
-              <button className="p-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/20 transition-all">
+              <button 
+                onClick={() => setShowInfo(!showInfo)}
+                className="p-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/20 transition-all"
+              >
                 <Info className="w-5 h-5" />
               </button>
             </div>
+
+            <AnimatePresence>
+              {showInfo && (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  className="absolute top-8 right-8 w-64 bg-white/95 backdrop-blur-xl p-6 rounded-2xl border border-gold/20 shadow-2xl z-50"
+                >
+                  <div className="flex justify-between items-center mb-4">
+                    <h5 className="text-forest font-bold text-xs uppercase tracking-widest">Aide AR</h5>
+                    <X onClick={() => setShowInfo(false)} className="w-4 h-4 text-gold cursor-pointer" />
+                  </div>
+                  <p className="text-forest/60 text-[10px] leading-relaxed">
+                    Orientez votre appareil vers un marqueur historique pour déclencher la reconstruction. Bougez votre téléphone pour explorer sous différents angles.
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </>
         )}
       </div>
 
-      {/* Info Cards */}
       <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
         {[
           { title: "Précision Historique", desc: "Modèles 3D validés par le comité scientifique du Bénin." },
