@@ -1,0 +1,9 @@
+{
+  "name": "Expériences Bénin",
+  "description": "Une vitrine de luxe numérique du Soft Power béninois, offrant des expériences culturelles immersives, des récits historiques et un pass culturel prestigieux.",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ],
+  "majorCapabilities": []
+}
